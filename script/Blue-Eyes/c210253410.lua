@@ -1,8 +1,8 @@
 -- Blue-Eyes Fusion
 local s,id=GetID()
 function s.initial_effect(c)
-  --Activate
-  local e1=Fusion.CreateSummonEff(c,aux.FilterBoolFunction(c:ListsArchetypeAsMaterial,0xdd),nil,s.fextra,Fusion.ShuffleMaterial,nil,s.stage2)
+    --Activate
+    local e1=Fusion.CreateSummonEff(c,aux.FilterBoolFunction(s.fusfilter),nil,s.fextra,Fusion.ShuffleMaterial,nil,s.stage2)
 	e1:SetCountLimit(1,id)
 	c:RegisterEffect(e1)
     --Search
@@ -17,11 +17,13 @@ function s.initial_effect(c)
 	c:RegisterEffect(e2)
 end
 s.listed_names={CARD_BLUEEYES_W_DRAGON,23995346}
-s.listed_series={0xdd}
+s.listed_series={SET_BLUE_EYES}
 
---Activate
+function s.fusfilter(c)
+	return c:IsSetCard(SET_BLUE_EYES) or c:ListsArchetypeAsMaterial(SET_BLUE_EYES) or c:ListsCodeAsMaterial(CARD_BLUEEYES_W_DRAGON)
+end
 function s.fcheck(tp,sg,fc)
-	return sg:IsExists(aux.FilterBoolFunction(Card.IsSetCard,0xdd,fc,SUMMON_TYPE_FUSION,tp),1,nil)
+	return sg:IsExists(aux.FilterBoolFunction(Card.IsSetCard,SET_BLUE_EYES,fc,SUMMON_TYPE_FUSION,tp),1,nil)
       and sg:GetClassCount(function(c) return c:GetLocation()&~(LOCATION_ONFIELD) end)==#sg
 end
 function s.fextra(e,tp,mg)
@@ -40,7 +42,7 @@ end
 
 --Search
 function s.tgfilter(c)
-	return c:IsSetCard(0xdd) and c:IsAbleToGraveAsCost()
+	return c:IsSetCard(SET_BLUE_EYES) and c:IsAbleToGraveAsCost()
 end
 function s.thcost(e,tp,eg,ep,ev,re,r,rp,chk)
 	if chk==0 then return e:GetHandler():IsAbleToRemoveAsCost()
